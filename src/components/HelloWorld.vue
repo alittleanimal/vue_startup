@@ -26,6 +26,8 @@
     <input type="text" v-model="yuan" placeholder="please input value">
     {{yuan}}
     {{cents}}
+    <div v-if="myDir" v-my-directive>{{msg}}</div>
+    <img v-lazy="img_url">
   </div>
 </template>
 
@@ -49,22 +51,24 @@ export default {
       username: "",
       picked: [],
       checked: [],
-      text: 'hello',
+      text: "hello",
       isActive: false,
-      password: '',
-      cents: 100
+      password: "",
+      cents: 100,
+      myDir: true,
+      img_url: 'https://jingdiaoxike.cn/static/site/img/nav__logo.png'
     };
   },
   computed: {
     canSubmit: function() {
-      return this.username && this.password
+      return this.username && this.password;
     },
     yuan: {
       set: function(val) {
-        this.cents = parseInt(val*100);
+        this.cents = parseInt(val * 100);
       },
       get: function(val) {
-        return this.cents /100;
+        return this.cents / 100;
       }
     }
   },
@@ -73,11 +77,54 @@ export default {
       alert("pressed");
     },
     submit: function() {
-      if(!this.canSubmit) {
-        alert('lack information')
+      if (!this.canSubmit) {
+        alert("lack information");
         return;
       }
-      alert('submit');
+      alert("submit");
+    }
+  },
+  directives: {
+    "my-directive": {
+      bind: function(el, binding, vnode, oldVnode) {
+        console.log("bind");
+      },
+      inserted: function(el, binding, vnode, oldVnode) {
+        console.log("inserted");
+      },
+      update: function(el, binding, vnode, oldVnode) {
+        console.log("update");
+      },
+      componentUpdated: function(el, binding, vnode, oldVnode) {
+        console.log("componentUpdated");
+      },
+      unbind: function(el, binding, vnode, oldVnode) {
+        console.log("unbind");
+      }
+    },
+    'lazy': {
+      inserted: function (el, binding) {
+        var body = document.body;
+        var offsetTop = el.offsetTop;
+        var parent = el.offsetParent;
+
+        while (parent && parent.tagName != 'body') {
+          offsetTop += parent.offsetTop;
+          parent = parent.offsetParent;
+        }
+
+        if (body.scrollTop + body.clientHeight > offsetTop && body.scrollTop < offsetTop) {
+          el.src = binding.value;
+        } else {
+          var scrollFn = function () {
+            if(body.scrollTop + body.clientHeight > offsetTop && body.scrollTop < offsetTop) {
+              el.src = binding.value;
+              window.removeEventListener('scroll', scrollFn)
+            }
+          }
+          window.addEventListener('scroll', scrollFn);
+        }
+      }
     }
   }
   /* eslint-disable */

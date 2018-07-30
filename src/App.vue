@@ -3,6 +3,10 @@
     <img src="./assets/logo.png">
     <block></block>
     <Carousel :items="items" :init="0" v-on:change="change"></Carousel>
+    <MyTab></MyTab>
+    <div>
+      <Tabs></Tabs>
+    </div>
     <router-view/>
   </div>
 </template>
@@ -10,11 +14,15 @@
 <script>
 import Block from './components/Block'
 import Carousel from './components/Carousel'
+import MyTab from './components/Tab'
+import Tabs from './components/mytabs/Tabs'
 export default {
   name: 'App',
   components: {
     Block,
-    Carousel
+    Carousel,
+    MyTab,
+    Tabs
   },
   data () {
     return {
